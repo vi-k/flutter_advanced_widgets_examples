@@ -7,7 +7,8 @@ class KeyedSubtreeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
@@ -44,28 +45,25 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            _SignIn(_signIn),
-            if (_user != null) ...[
+            SignIn(_signIn),
+            if (_user != null)
               Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment:
+                      MainAxisAlignment.center,
                   children: [
-                    User(key: ValueKey(_user), _user!),
-                    ElevatedButton(
-                      onPressed: _signOut,
-                      child: const Text('Sign out'),
-                    ),
+                    User(_user!),
+                    const SizedBox(height: 10),
+                    SignOut(_signOut),
                   ],
                 ),
               ),
-            ],
           ],
         ),
       ),
@@ -73,10 +71,10 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   }
 }
 
-class _SignIn extends StatelessWidget {
-  final void Function(String login) onLogin;
+class SignIn extends StatelessWidget {
+  const SignIn(this.onLogin);
 
-  const _SignIn(this.onLogin);
+  final void Function(String login) onLogin;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +85,41 @@ class _SignIn extends StatelessWidget {
           onSubmitted: onLogin,
         ),
       ],
+    );
+  }
+}
+
+class SignOut extends StatefulWidget {
+  const SignOut(
+    this.onSignOut, {
+    super.key,
+    this.user,
+  });
+
+  final void Function() onSignOut;
+  final String? user;
+
+  @override
+  State<SignOut> createState() => _SignOutState();
+}
+
+class _SignOutState extends State<SignOut> {
+  String? _user;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _user = widget.user;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: widget.onSignOut,
+      child: _user == null
+          ? const Text('Sign out')
+          : Text('Sign out $_user'),
     );
   }
 }
@@ -128,7 +161,9 @@ class _UserState extends State<User> {
   }
 
   Future<UserInfo> _loadUserInfo(String user) async {
-    await Future<void>.delayed(const Duration(seconds: 2));
+    await Future<void>.delayed(
+      const Duration(milliseconds: 500),
+    );
 
     return UserInfo('Confidential data for user `$user`');
   }
