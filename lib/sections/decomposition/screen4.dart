@@ -13,7 +13,10 @@ class Screen4 extends StatefulWidget {
     BuildContext context, {
     bool listen = true,
   }) =>
-      _Screen4InheritedWidget.of(context, listen: listen).controller;
+      _Screen4InheritedWidget.of(
+        context,
+        listen: listen,
+      ).controller;
 
   @override
   State<Screen4> createState() => Screen4State();
@@ -68,31 +71,36 @@ class Screen4State extends State<Screen4> {
 }
 
 class _Screen4InheritedWidget extends InheritedWidget {
-  final Screen4State controller;
-
   const _Screen4InheritedWidget({
     required this.controller,
     required super.child,
   });
+
+  final Screen4State controller;
 
   static _Screen4InheritedWidget of(
     BuildContext context, {
     required bool listen,
   }) =>
       maybeOf(context, listen: listen) ??
-      (throw Exception('$_Screen4InheritedWidget not found in the context.'));
+      (throw Exception(
+        '$_Screen4InheritedWidget not found in the context.',
+      ));
 
   static _Screen4InheritedWidget? maybeOf(
     BuildContext context, {
     required bool listen,
   }) =>
       listen
-          ? context
-              .dependOnInheritedWidgetOfExactType<_Screen4InheritedWidget>()
-          : context.getInheritedWidgetOfExactType<_Screen4InheritedWidget>();
+          ? context.dependOnInheritedWidgetOfExactType<
+              _Screen4InheritedWidget>()
+          : context.getInheritedWidgetOfExactType<
+              _Screen4InheritedWidget>();
 
   @override
-  bool updateShouldNotify(_Screen4InheritedWidget oldWidget) => true;
+  bool updateShouldNotify(
+          _Screen4InheritedWidget oldWidget) =>
+      true;
 }
 
 class _Title extends StatelessWidget {
@@ -114,7 +122,10 @@ class _Title extends StatelessWidget {
         style: Theme.of(context)
             .textTheme
             .titleLarge!
-            .apply(color: Theme.of(context).colorScheme.onPrimary),
+            .apply(
+              color:
+                  Theme.of(context).colorScheme.onPrimary,
+            ),
         child: Text(
           controller.widget.title,
           textAlign: TextAlign.center,
@@ -147,7 +158,9 @@ class _Counter extends StatelessWidget {
                 vertical: 2,
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
+                color: Theme.of(context)
+                    .colorScheme
+                    .primaryContainer,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(10),
                 ),
@@ -156,7 +169,11 @@ class _Counter extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!
-                    .apply(color: Theme.of(context).colorScheme.onPrimaryFixed),
+                    .apply(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onPrimaryFixed,
+                    ),
                 child: Text('${controller.counter}'),
               ),
             ),
@@ -203,13 +220,17 @@ class _ThemeExample extends StatelessWidget {
     final controller = Screen4.of(context);
 
     return Theme(
-      data: controller.darkTheme ? ThemeData.dark() : ThemeData.light(),
+      data: controller.darkTheme
+          ? ThemeData.dark()
+          : ThemeData.light(),
       child: Builder(builder: (context) {
         return Material(
           borderRadius: const BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          color: Theme.of(context)
+              .colorScheme
+              .surfaceContainerHighest,
           child: Container(
             padding: const EdgeInsets.all(10),
             child: const Text('Theme example'),

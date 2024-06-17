@@ -10,7 +10,8 @@ class Screen5 extends StatefulWidget {
     required this.title,
   });
 
-  static Screen5State of(BuildContext context) => _Screen4InheritedModel.of(
+  static Screen5State of(BuildContext context) =>
+      _Screen4InheritedModel.of(
         context,
         listen: false,
       ).controller;
@@ -99,12 +100,8 @@ class Screen5State extends State<Screen5> {
 
 enum _Aspects { title, counter, darkTheme }
 
-class _Screen4InheritedModel extends InheritedModel<_Aspects> {
-  final Screen5State controller;
-  final String title;
-  final int counter;
-  final bool darkTheme;
-
+class _Screen4InheritedModel
+    extends InheritedModel<_Aspects> {
   _Screen4InheritedModel({
     required this.controller,
     required super.child,
@@ -112,13 +109,20 @@ class _Screen4InheritedModel extends InheritedModel<_Aspects> {
         counter = controller.counter,
         darkTheme = controller.darkTheme;
 
+  final Screen5State controller;
+  final String title;
+  final int counter;
+  final bool darkTheme;
+
   static _Screen4InheritedModel of(
     BuildContext context, {
     required bool listen,
     _Aspects? aspect,
   }) =>
       maybeOf(context, listen: listen, aspect: aspect) ??
-      (throw Exception('$_Screen4InheritedModel not found in the context.'));
+      (throw Exception(
+        '$_Screen4InheritedModel not found in the context.',
+      ));
 
   static _Screen4InheritedModel? maybeOf(
     BuildContext context, {
@@ -126,22 +130,28 @@ class _Screen4InheritedModel extends InheritedModel<_Aspects> {
     _Aspects? aspect,
   }) =>
       listen
-          ? InheritedModel.inheritFrom<_Screen4InheritedModel>(
+          ? InheritedModel.inheritFrom<
+              _Screen4InheritedModel>(
               context,
               aspect: aspect,
             )
-          : context.getInheritedWidgetOfExactType<_Screen4InheritedModel>();
+          : context.getInheritedWidgetOfExactType<
+              _Screen4InheritedModel>();
 
   @override
-  bool updateShouldNotify(_Screen4InheritedModel oldWidget) => true;
+  bool updateShouldNotify(
+          _Screen4InheritedModel oldWidget) =>
+      true;
 
   @override
   bool updateShouldNotifyDependent(
     covariant _Screen4InheritedModel oldWidget,
     Set<_Aspects> dependencies,
   ) =>
-      dependencies.contains(_Aspects.title) && title != oldWidget.title ||
-      dependencies.contains(_Aspects.counter) && counter != oldWidget.counter ||
+      dependencies.contains(_Aspects.title) &&
+          title != oldWidget.title ||
+      dependencies.contains(_Aspects.counter) &&
+          counter != oldWidget.counter ||
       dependencies.contains(_Aspects.darkTheme) &&
           darkTheme != oldWidget.darkTheme;
 }
@@ -163,7 +173,10 @@ class _Title extends StatelessWidget {
         style: Theme.of(context)
             .textTheme
             .titleLarge!
-            .apply(color: Theme.of(context).colorScheme.onPrimary),
+            .apply(
+              color:
+                  Theme.of(context).colorScheme.onPrimary,
+            ),
         child: Text(
           Screen5.titleOf(context),
           textAlign: TextAlign.center,
@@ -194,7 +207,9 @@ class _Counter extends StatelessWidget {
                 vertical: 2,
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
+                color: Theme.of(context)
+                    .colorScheme
+                    .primaryContainer,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(10),
                 ),
@@ -203,8 +218,13 @@ class _Counter extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!
-                    .apply(color: Theme.of(context).colorScheme.onPrimaryFixed),
-                child: Text('${Screen5.counterOf(context)}'),
+                    .apply(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onPrimaryFixed,
+                    ),
+                child:
+                    Text('${Screen5.counterOf(context)}'),
               ),
             ),
           ],
@@ -231,7 +251,8 @@ class _ThemeSwitcher extends StatelessWidget {
             ),
             Switch.adaptive(
               value: Screen5.darkThemeOf(context),
-              onChanged: (value) => Screen5.of(context).toggleTheme(value),
+              onChanged: (value) =>
+                  Screen5.of(context).toggleTheme(value),
             ),
           ],
         ),
@@ -246,13 +267,17 @@ class _ThemeExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: Screen5.darkThemeOf(context) ? ThemeData.dark() : ThemeData.light(),
+      data: Screen5.darkThemeOf(context)
+          ? ThemeData.dark()
+          : ThemeData.light(),
       child: Builder(builder: (context) {
         return Material(
           borderRadius: const BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          color: Theme.of(context)
+              .colorScheme
+              .surfaceContainerHighest,
           child: Container(
             padding: const EdgeInsets.all(10),
             child: const Text('Theme example'),
@@ -277,7 +302,8 @@ class _Actions extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         FloatingActionButton(
-          onPressed: () => Screen5.of(context).incrementCounter(),
+          onPressed: () =>
+              Screen5.of(context).incrementCounter(),
           child: const Icon(Icons.add),
         ),
       ],

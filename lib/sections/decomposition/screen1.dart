@@ -45,7 +45,8 @@ class _Screen1State extends State<Screen1> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
+                color:
+                    Theme.of(context).colorScheme.primary,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(20),
                 ),
@@ -54,7 +55,11 @@ class _Screen1State extends State<Screen1> {
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!
-                    .apply(color: Theme.of(context).colorScheme.onPrimary),
+                    .apply(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onPrimary,
+                    ),
                 child: Text(
                   widget.title,
                   textAlign: TextAlign.center,
@@ -77,14 +82,22 @@ class _Screen1State extends State<Screen1> {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primaryContainer,
                       borderRadius: const BorderRadius.all(
                         Radius.circular(10),
                       ),
                     ),
                     child: DefaultTextStyle(
-                      style: Theme.of(context).textTheme.titleMedium!.apply(
-                          color: Theme.of(context).colorScheme.onPrimaryFixed),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .apply(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryFixed,
+                          ),
                       child: Text('$_counter'),
                     ),
                   ),
@@ -110,13 +123,17 @@ class _Screen1State extends State<Screen1> {
             ),
             const SizedBox(height: 10),
             Theme(
-              data: _darkTheme ? ThemeData.dark() : ThemeData.light(),
+              data: _darkTheme
+                  ? ThemeData.dark()
+                  : ThemeData.light(),
               child: Builder(builder: (context) {
                 return Material(
                   borderRadius: const BorderRadius.vertical(
                     bottom: Radius.circular(20),
                   ),
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .surfaceContainerHighest,
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     child: const Text('Theme example'),
