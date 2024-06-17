@@ -9,7 +9,8 @@ class GlobalKeyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
@@ -32,7 +33,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   var _index = 0;
 
   // final _globalKey = GlobalKey();
-  final _globalKey = GlobalKey<_MyWidgetState>();
+  // final _globalKey = GlobalKey<_MyWidgetState>();
 
   void _move() {
     setState(() {
@@ -43,23 +44,34 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     });
   }
 
-  void _changeColor() {
-    final state = _globalKey.currentState;
-    state?.changeColor();
+  void _refresh() {
+    // final state = _globalKey.currentState;
+    // state?.changeColor();
+
+    //   // var counter = 0;
+    //   // _globalKey.currentContext
+    //   //     ?.visitAncestorElements((parent) {
+    //   //   if (parent.widget is MyHomeScreen) {
+    //   //     return false;
+    //   //   }
+    //   //   counter++;
+    //   //   return true;
+    //   // });
+    //   // print(counter);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment:
+                MainAxisAlignment.spaceEvenly,
             children: [
               for (var i = 0; i < _count; i++)
                 Container(
@@ -69,8 +81,10 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                   width: 200,
                   height: 100,
                   child: Center(
-                    // child: _index != i ? null : const _MyWidget(),
-                    child: _index != i ? null : _MyWidget(key: _globalKey),
+                    child: _index != i
+                        ? null
+                        : const _MyWidget(),
+                    // : _MyWidget(key: _globalKey),
                   ),
                 ),
             ],
@@ -86,7 +100,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
           ),
           const SizedBox(height: 10),
           FloatingActionButton(
-            onPressed: _changeColor,
+            onPressed: _refresh,
             child: const Icon(Icons.refresh),
           ),
         ],
