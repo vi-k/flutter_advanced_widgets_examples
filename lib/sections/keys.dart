@@ -9,7 +9,8 @@ class KeysApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
@@ -43,67 +44,72 @@ class Item {
 }
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
-  static const _count = 5;
+  static const _count = 3;
   static final _random = Random();
 
   late List<Item> _items;
-  late List<(UniqueKey, Item)> _itemsWithKeys = [];
+  // late List<(UniqueKey, Item)> _itemsWithKeys = [];
 
   @override
   void initState() {
     super.initState();
 
-    _items = List.generate(_count, (i) => Item(i + 1, _generateData()));
-    _items.add(_items[0]);
+    _items = List.generate(
+      _count,
+      (i) => Item(i + 1, _generateData()),
+    );
+    // _items.add(_items[0]);
 
-    for (final item in _items) {
-      _itemsWithKeys.add((UniqueKey(), item));
-    }
+    // for (final item in _items) {
+    //   _itemsWithKeys.add((UniqueKey(), item));
+    // }
   }
 
   void _updateData() {
     setState(() {
-      // _items = _randomSort(_items);
+      _items = _randomSort(_items);
       // _items = _recreateItems(_items);
       // _items = _updateItemsData(_items);
-      _itemsWithKeys = _randomSort(_itemsWithKeys);
+      // _itemsWithKeys = _randomSort(_itemsWithKeys);
     });
   }
 
   static int _generateData() => _random.nextInt(100);
 
   static List<T> _randomSort<T>(List<T> items) =>
-      List.of(items)..sort((a, b) => _random.nextBool() ? 1 : -1);
+      List.of(items)
+        ..sort((a, b) => _random.nextBool() ? 1 : -1);
 
   static List<Item> _recreateItems(List<Item> list) =>
       list.map((item) => Item(item.id, item.data)).toList();
 
   static List<Item> _updateItemsData(List<Item> list) =>
-      list.map((item) => Item(item.id, _generateData())).toList();
+      list
+          .map((item) => Item(item.id, _generateData()))
+          .toList();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // for (final item in _items)
-          //   _RandomColoredBox(
-          //     // key: ValueKey(item),
-          //     // key: ObjectKey(item),
-          //     // key: ValueKey(item.id),
-          //     // key: UniqueKey(),
-          //     child: Text('#${item.id}: ${item.data}'),
-          //   ),
-          for (final (key, item) in _itemsWithKeys)
+          for (final item in _items)
             _RandomColoredBox(
-              key: key,
+              // key: ObjectKey(item),
+              // key: ValueKey(item),
+              // key: ValueKey(item.id),
+              // key: UniqueKey(),
               child: Text('#${item.id}: ${item.data}'),
             ),
+          // for (final (key, item) in _itemsWithKeys)
+          //   _RandomColoredBox(
+          //     key: key,
+          //     child: Text('#${item.id}: ${item.data}'),
+          //   ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -123,10 +129,12 @@ class _RandomColoredBox extends StatefulWidget {
   });
 
   @override
-  State<_RandomColoredBox> createState() => _RandomColoredBoxState();
+  State<_RandomColoredBox> createState() =>
+      _RandomColoredBoxState();
 }
 
-class _RandomColoredBoxState extends State<_RandomColoredBox> {
+class _RandomColoredBoxState
+    extends State<_RandomColoredBox> {
   static final _random = Random();
 
   late final Color _color;
