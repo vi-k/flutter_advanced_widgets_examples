@@ -9,11 +9,14 @@ class StatelessApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const MyHomeScreen(title: 'Stateless with state'),
+      home: const MyHomeScreen(
+        title: 'Stateless with state',
+      ),
     );
   }
 }
@@ -40,7 +43,6 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: Center(
@@ -59,33 +61,37 @@ abstract class MyStatelessWidget extends StatelessWidget {
   const MyStatelessWidget({super.key});
 
   @override
-  StatelessElement createElement() => MyStatelessElement(this);
+  StatelessElement createElement() =>
+      MyStatelessElement(this);
 
   MyState createMyState();
 
   @override
-  Widget build(BuildContext context) => throw UnimplementedError();
+  Widget build(BuildContext context) =>
+      throw UnimplementedError();
 }
 
 /// Element for [MyStatelessWidget].
 class MyStatelessElement extends StatelessElement {
-  final MyState<MyStatelessWidget> state;
-
-  MyStatelessElement(MyStatelessWidget super.widget)
-      : state = widget.createMyState() {
-    state._widget = widget as MyStatelessWidget;
-    state.init();
+  MyStatelessElement(MyStatelessWidget widget)
+      : state = widget.createMyState(),
+        super(widget) {
+    state._widget = widget;
+    state._context = this;
+    state.initMyState();
   }
 
+  final MyState<MyStatelessWidget> state;
+
   @override
-  void update(StatelessWidget newWidget) {
-    state._widget = newWidget as MyStatelessWidget;
+  void update(MyStatelessWidget newWidget) {
+    state._widget = newWidget;
     super.update(newWidget);
   }
 
   @override
   void unmount() {
-    state.deinit();
+    state.disposeMyState();
     super.unmount();
   }
 
@@ -98,9 +104,12 @@ abstract class MyState<T extends MyStatelessWidget> {
   T get widget => _widget!;
   T? _widget;
 
-  void init() {}
+  BuildContext get context => _context!;
+  BuildContext? _context;
 
-  void deinit() {}
+  void initMyState() {}
+
+  void disposeMyState() {}
 
   Widget myBuild(BuildContext context);
 }
@@ -124,23 +133,22 @@ class _MyWidgetState extends MyState<MyWidget> {
   late final Color _color;
 
   @override
-  void init() {
-    super.init();
-    _color = _randomColor();
+  void initMyState() {
+    super.initMyState();
+
+    _color = Color.fromARGB(
+      255,
+      _random.nextInt(256),
+      _random.nextInt(256),
+      _random.nextInt(256),
+    );
   }
 
   @override
-  void deinit() {
+  void disposeMyState() {
     // ...
-    super.deinit();
+    super.disposeMyState();
   }
-
-  Color _randomColor() => Color.fromARGB(
-        255,
-        _random.nextInt(256),
-        _random.nextInt(256),
-        _random.nextInt(256),
-      );
 
   @override
   Widget myBuild(BuildContext context) {
