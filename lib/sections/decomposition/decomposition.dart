@@ -19,7 +19,9 @@ class DecompositionApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const MyHomeScreen(title: 'Decomposition'),
+      home: const MyHomeScreen(
+        title: 'Decomposition',
+      ),
     );
   }
 }

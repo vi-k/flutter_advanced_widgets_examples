@@ -8,11 +8,15 @@ class RenderObjectUsingApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+        ),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const MyHomeScreen(title: 'Render object. Using'),
+      home: const MyHomeScreen(
+        title: 'Render object. Using',
+      ),
     );
   }
 }
@@ -46,23 +50,25 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: Column(
+        key: ValueKey(_counter),
         children: [
           SingleChildScrollView(
-            key: ValueKey('SingleChildScrollView#$_counter'),
             scrollDirection: Axis.horizontal,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10),
               child: Row(
                 children: [
-                  for (var i = 0; i < 10; i++) ...[
+                  for (var i = 0, key = const ValueKey(0);
+                      i < 10;
+                      key = ValueKey(++i)) ...[
                     const SizedBox(width: 10),
-                    if (_selected == ValueKey(i))
+                    if (_selected == key)
                       FilledButton(
-                        key: ValueKey(i),
+                        key: key,
                         onPressed: () {
                           _select(null);
                         },
@@ -70,9 +76,9 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                       )
                     else
                       ElevatedButton(
-                        key: ValueKey(i),
+                        key: key,
                         onPressed: () {
-                          _select(ValueKey(i));
+                          _select(key);
                         },
                         child: Text('$i'),
                       ),
@@ -83,21 +89,24 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
             ),
           ),
           AutoScrollBand(
-            key: ValueKey('AutoScrollBand#$_counter'),
             selected: _selected,
             children: [
-              for (var i = 0; i < 10; i++)
-                if (_selected == ValueKey(i))
+              for (var i = 0, key = const ValueKey(0);
+                  i < 10;
+                  key = ValueKey(++i))
+                if (_selected == key)
                   FilledButton(
-                    key: ValueKey(i),
-                    onPressed: () {},
+                    key: key,
+                    onPressed: () {
+                      _select(null);
+                    },
                     child: Text('$i'),
                   )
                 else
                   ElevatedButton(
-                    key: ValueKey(i),
+                    key: key,
                     onPressed: () {
-                      _select(ValueKey(i));
+                      _select(key);
                     },
                     child: Text('$i'),
                   ),
@@ -129,11 +138,13 @@ class AutoScrollBand extends StatefulWidget {
   final Key? selected;
 
   @override
-  State<AutoScrollBand> createState() => _AutoScrollBandState();
+  State<AutoScrollBand> createState() =>
+      _AutoScrollBandState();
 }
 
 class _AutoScrollBandState extends State<AutoScrollBand> {
   final _scrollController = ScrollController();
+  final _rowGlobalKey = GlobalKey();
 
   @override
   void initState() {
@@ -141,31 +152,35 @@ class _AutoScrollBandState extends State<AutoScrollBand> {
 
     final selected = widget.selected;
     if (selected != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _goto(selected));
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _goto(selected));
     }
   }
 
   void _goto(Key key) {
-    final row = _findRow(context)!;
-    Element? selected;
+    final row = _rowGlobalKey.currentContext!;
 
+    // Находим по ключу selected нужный нам child.
+    Element? child;
     row.visitChildElements((element) {
       if (element.widget.key == key) {
-        selected = element;
+        child = element;
       }
     });
 
-    if (selected != null) {
-      final renderSelected = selected!.findRenderObject();
-      if (renderSelected is RenderBox) {
-        final parentData = renderSelected.parentData;
+    if (child != null) {
+      final selected = child!.findRenderObject();
+      if (selected is RenderBox) {
+        final parentData = selected.parentData;
         if (parentData is BoxParentData) {
-          final offset = parentData.offset.dx -
-              (_scrollController.position.viewportDimension -
-                      renderSelected.size.width) /
-                  2;
+          final width = selected.size.width;
+          final viewportWidth =
+              _scrollController.position.viewportDimension;
+          final x = parentData.offset.dx;
+
+          final animateTo = x - (viewportWidth - width) / 2;
           _scrollController.animateTo(
-            offset,
+            animateTo,
             duration: const Duration(milliseconds: 1000),
             curve: Curves.ease,
           );
@@ -174,7 +189,8 @@ class _AutoScrollBandState extends State<AutoScrollBand> {
     }
   }
 
-  MultiChildRenderObjectElement? _findRow(BuildContext context) {
+  MultiChildRenderObjectElement? _findRow(
+      BuildContext context) {
     MultiChildRenderObjectElement? result;
 
     context.visitChildElements((element) {
@@ -196,6 +212,7 @@ class _AutoScrollBandState extends State<AutoScrollBand> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
+          key: _rowGlobalKey,
           children: [
             for (final child in widget.children) ...[
               const SizedBox(width: 10),

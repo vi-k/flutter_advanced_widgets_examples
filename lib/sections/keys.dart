@@ -10,11 +10,14 @@ class KeysApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple),
+          seedColor: Colors.deepPurple,
+        ),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const MyHomeScreen(title: 'Keys'),
+      home: const MyHomeScreen(
+        title: 'Keys',
+      ),
     );
   }
 }

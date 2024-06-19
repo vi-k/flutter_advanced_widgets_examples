@@ -9,11 +9,15 @@ class RenderObjectCreationApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+        ),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const MyHomeScreen(title: 'Render object. Creation'),
+      home: const MyHomeScreen(
+        title: 'Render object. Creation',
+      ),
     );
   }
 }
@@ -36,7 +40,6 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: Center(
@@ -46,10 +49,10 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
             Clock(
               time: DateTime.now(),
             ),
-            FilledButton(
-              onPressed: () {},
-              child: const Text('abc'),
-            ),
+            // FilledButton(
+            //   onPressed: () {},
+            //   child: const Text('abc'),
+            // ),
           ],
         ),
       ),
@@ -103,15 +106,25 @@ class RenderClock extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
+    // context.canvas.drawCircle(
+    //   Offset.zero,
+    //   10,
+    //   Paint()..color = Colors.blue,
+    // );
+
     context.canvas
       ..save()
-      ..translate(offset.dx + size.width / 2, offset.dy + size.height / 2);
+      ..translate(
+        offset.dx + size.width / 2,
+        offset.dy + size.height / 2,
+      );
 
     final clockRadius = size.shortestSide / 2;
     final hourMarkerRadius = clockRadius / 20;
     final minuteMarkerLength = hourMarkerRadius;
     final minuteMarkerWidth = minuteMarkerLength / 2;
-    final innerClockRadius = clockRadius - hourMarkerRadius * 2;
+    final innerClockRadius =
+        clockRadius - hourMarkerRadius * 2;
 
     // Циферблат.
     for (var i = 0; i < 60; i++) {
@@ -128,7 +141,9 @@ class RenderClock extends RenderBox {
       } else {
         context.canvas.drawRect(
           Rect.fromLTWH(
-            clockRadius - (hourMarkerRadius * 2 - minuteMarkerLength / 2),
+            clockRadius -
+                (hourMarkerRadius * 2 -
+                    minuteMarkerLength / 2),
             -minuteMarkerWidth / 2,
             minuteMarkerLength,
             minuteMarkerWidth,
@@ -210,7 +225,9 @@ class RenderClock extends RenderBox {
       ..restore();
   }
 
-  double _hourToRadians(double hour) => pi * 2 * hour / 12 - pi / 2;
+  double _hourToRadians(double hour) =>
+      pi * 2 * hour / 12 - pi / 2;
 
-  double _minuteToRadians(double minute) => pi * 2 * minute / 60 - pi / 2;
+  double _minuteToRadians(double minute) =>
+      pi * 2 * minute / 60 - pi / 2;
 }
