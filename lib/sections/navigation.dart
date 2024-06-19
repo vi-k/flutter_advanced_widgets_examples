@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_widgets_examples/common/navigation_node.dart';
 
 class NavigationApp extends StatelessWidget {
   const NavigationApp({super.key});
@@ -10,11 +7,15 @@ class NavigationApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+        ),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const MyHomeScreen(title: 'Navigation'),
+      home: const MyHomeScreen(
+        title: 'Navigation',
+      ),
     );
   }
 }
@@ -24,198 +25,198 @@ class MyHomeScreen extends StatefulWidget {
 
   final String title;
 
-  static MyHomeScreenState of(
+  static MyHomeScreenState of(BuildContext context) =>
+      _MyHomeScreenInheritedWidget.of(context,
+              listen: false)
+          .controller;
+
+  static String titleOf(
     BuildContext context, {
     bool listen = true,
   }) =>
-      _MyHomeScreenInheritedWidget.of(context, listen: listen).controller;
+      _MyHomeScreenInheritedWidget.of(
+        context,
+        listen: listen,
+        aspect: _Aspects.title,
+      ).title;
+
+  static bool someValueOf(
+    BuildContext context, {
+    bool listen = true,
+  }) =>
+      _MyHomeScreenInheritedWidget.of(
+        context,
+        listen: listen,
+        aspect: _Aspects.someValue,
+      ).someValue;
 
   @override
   State<MyHomeScreen> createState() => MyHomeScreenState();
 }
 
 class MyHomeScreenState extends State<MyHomeScreen> {
-  bool get isDark => _isDark;
-  var _isDark = false;
+  bool get someValue => _someValue;
+  var _someValue = false;
 
-  TimeOfDay get time => _time;
-  var _time = TimeOfDay.fromDateTime(DateTime.now());
-  set time(TimeOfDay value) {
-    if (_time != value) {
+  void changeSomeValue(bool value) {
+    if (_someValue != value) {
       setState(() {
-        _time = value;
+        _someValue = value;
       });
     }
-  }
-
-  void toggleTheme() {
-    setState(() {
-      _isDark = !_isDark;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return _MyHomeScreenInheritedWidget(
       controller: this,
-      child: Theme(
-        data: _isDark ? ThemeData.dark() : ThemeData.light(),
-        child: const MediaQuery(
-          data: MediaQueryData(
-            alwaysUse24HourFormat: true,
-          ),
-          child: _Content(),
-
-          // child: Navigator(
-          //   pages: [
-          //     MaterialPage(child: _Content()),
-          //   ],
-          // ),
-
-          // child: NavigationNode(
-          //   child: _Content(),
-          // ),
-        ),
-      ),
+      child: const _Content(),
     );
   }
 }
 
-class _MyHomeScreenInheritedWidget extends InheritedWidget {
-  final MyHomeScreenState controller;
-
-  const _MyHomeScreenInheritedWidget({
-    required this.controller,
-    required super.child,
-  });
-
-  static _MyHomeScreenInheritedWidget of(
-    BuildContext context, {
-    required bool listen,
-  }) =>
-      maybeOf(context, listen: listen) ??
-      (throw Exception(
-          '$_MyHomeScreenInheritedWidget not found in the context.'));
-
-  static _MyHomeScreenInheritedWidget? maybeOf(
-    BuildContext context, {
-    required bool listen,
-  }) =>
-      listen
-          ? context.dependOnInheritedWidgetOfExactType<
-              _MyHomeScreenInheritedWidget>()
-          : context
-              .getInheritedWidgetOfExactType<_MyHomeScreenInheritedWidget>();
-
-  @override
-  bool updateShouldNotify(_MyHomeScreenInheritedWidget oldWidget) => true;
-}
-
-class _Content extends StatefulWidget {
+class _Content extends StatelessWidget {
   const _Content();
 
   @override
-  State<_Content> createState() => _ContentState();
-}
-
-class _ContentState extends State<_Content> {
-  @override
   Widget build(BuildContext context) {
-    final controller = MyHomeScreen.of(context);
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(controller.widget.title),
+        title: Text(MyHomeScreen.titleOf(context)),
       ),
-      body: Center(
-        child: Text(controller.time.format(context)),
+      body: const Center(
+        child: SomeValue(),
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FloatingActionButton(
-            heroTag: 1,
-            onPressed: controller.toggleTheme,
-            child: Icon(
-              controller.isDark ? Icons.light_mode : Icons.dark_mode,
-            ),
+          FilledButton(
+            onPressed: () {
+              MyHomeScreen.someValueOf(context);
+              showOtherScreen(context);
+            },
+            child: const Text('Other screen'),
           ),
           const SizedBox(width: 10),
-          FloatingActionButton(
-            heroTag: 2,
-            onPressed: setNewTime,
-            child: const Icon(Icons.access_time_outlined),
-          ),
-          const SizedBox(width: 10),
-          FloatingActionButton(
-            heroTag: 3,
-            onPressed: showTime,
-            child: const Icon(Icons.chat),
-          ),
-          const SizedBox(width: 10),
-          FloatingActionButton(
-            heroTag: 4,
-            onPressed: duplicate,
-            child: const Icon(Icons.copy),
+          FilledButton(
+            onPressed: () {
+              duplicate(context);
+            },
+            child: const Text('Duplicate'),
           ),
         ],
       ),
     );
   }
 
-  Future<void> setNewTime() async {
-    final time = await showDialog<TimeOfDay>(
-      context: context,
-      barrierDismissible: true,
-      useRootNavigator: false,
-      builder: (context) => TimePickerDialog(
-        initialTime: TimeOfDay.fromDateTime(DateTime.now()),
-      ),
-    );
-
-    if (time != null && mounted) {
-      MyHomeScreen.of(context).time = time;
-    }
-  }
-
-  void showTime() {
+  void showOtherScreen(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const _ShowTime(),
+        builder: (context) => const MyOtherScreen(),
       ),
     );
   }
 
-  void duplicate() {
+  void duplicate(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MyHomeScreen(title: 'Navigation 2'),
+        builder: (context) =>
+            const MyHomeScreen(title: 'Navigation 2'),
       ),
     );
   }
 }
 
-class _ShowTime extends StatelessWidget {
-  const _ShowTime();
+enum _Aspects { title, someValue }
+
+class _MyHomeScreenInheritedWidget
+    extends InheritedModel<_Aspects> {
+  _MyHomeScreenInheritedWidget({
+    required this.controller,
+    required super.child,
+  })  : title = controller.widget.title,
+        someValue = controller.someValue;
+
+  final MyHomeScreenState controller;
+  final String title;
+  final bool someValue;
+
+  static _MyHomeScreenInheritedWidget of(
+    BuildContext context, {
+    required bool listen,
+    _Aspects? aspect,
+  }) =>
+      maybeOf(
+        context,
+        listen: listen,
+        aspect: aspect,
+      ) ??
+      (throw Exception(
+        '$_MyHomeScreenInheritedWidget not found in the context.',
+      ));
+
+  static _MyHomeScreenInheritedWidget? maybeOf(
+    BuildContext context, {
+    required bool listen,
+    _Aspects? aspect,
+  }) =>
+      listen
+          ? InheritedModel.inheritFrom<
+              _MyHomeScreenInheritedWidget>(
+              context,
+              aspect: aspect,
+            )
+          : context.getInheritedWidgetOfExactType<
+              _MyHomeScreenInheritedWidget>();
+
+  @override
+  bool updateShouldNotify(
+          _MyHomeScreenInheritedWidget oldWidget) =>
+      true;
+
+  @override
+  bool updateShouldNotifyDependent(
+          _MyHomeScreenInheritedWidget oldWidget,
+          Set<_Aspects> dependencies) =>
+      dependencies.contains(_Aspects.title) &&
+          title != oldWidget.title ||
+      dependencies.contains(_Aspects.someValue) &&
+          someValue != oldWidget.someValue;
+}
+
+class SomeValue extends StatelessWidget {
+  const SomeValue({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final controller = MyHomeScreen.of(context);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text('Some value: '),
+        Switch.adaptive(
+          value: MyHomeScreen.someValueOf(context),
+          onChanged: (value) {
+            MyHomeScreen.of(context).changeSomeValue(value);
+          },
+        ),
+      ],
+    );
+  }
+}
 
-    return MediaQuery(
-      data: MediaQuery.of(context).removePadding(),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('Show time'),
-        ),
-        body: Center(
-          child: Text('time'),
-          // child: Text(controller.time.format(context)),
-        ),
+class MyOtherScreen extends StatelessWidget {
+  const MyOtherScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Other screen'),
+      ),
+      body: const Center(
+        child: SomeValue(),
       ),
     );
   }

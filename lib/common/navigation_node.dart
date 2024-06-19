@@ -11,11 +11,14 @@ class NavigationNode extends StatefulWidget {
   final Widget child;
 
   static NavigationNodeState of(BuildContext context) =>
-      context.findAncestorStateOfType<NavigationNodeState>() ??
-      (throw Exception('$NavigationNode not fount in the context.'));
+      context
+          .findAncestorStateOfType<NavigationNodeState>() ??
+      (throw Exception(
+          '$NavigationNode not fount in the context.'));
 
   @override
-  State<NavigationNode> createState() => NavigationNodeState();
+  State<NavigationNode> createState() =>
+      NavigationNodeState();
 }
 
 class NavigationNodeState extends State<NavigationNode> {
@@ -47,7 +50,8 @@ class NavigationNodeState extends State<NavigationNode> {
       );
 }
 
-class _NodeRouterDelegate<T> extends RouterDelegate<T> with ChangeNotifier {
+class _NodeRouterDelegate<T> extends RouterDelegate<T>
+    with ChangeNotifier {
   _NodeRouterDelegate({
     required this.node,
     required this.child,
@@ -65,7 +69,8 @@ class _NodeRouterDelegate<T> extends RouterDelegate<T> with ChangeNotifier {
       );
 
   @override
-  Future<bool> popRoute() => node._navigatorState.maybePop();
+  Future<bool> popRoute() =>
+      node._navigatorState.maybePop();
 
   @override
   Future<void> setNewRoutePath(T configuration) async {}
@@ -83,7 +88,8 @@ class _NodeNavigator extends Navigator {
 
 class _NodeNavigatorState extends NavigatorState {
   @override
-  _NodeNavigator get widget => super.widget as _NodeNavigator;
+  _NodeNavigator get widget =>
+      super.widget as _NodeNavigator;
 
   @override
   void initState() {
@@ -92,14 +98,14 @@ class _NodeNavigatorState extends NavigatorState {
   }
 
   @override
-  bool canPop() => super.canPop() || (prev?.canPop() ?? false);
-
-  // Future<bool> maybePopInsideRoute<T extends Object?>([T? result]) async =>
-  //     super.maybePop(result);
+  bool canPop() =>
+      super.canPop() || (previous?.canPop() ?? false);
 
   @override
-  Future<bool> maybePop<T extends Object?>([T? result]) async =>
-      await super.maybePop(result) || (await prev?.maybePop(result) ?? false);
+  Future<bool> maybePop<T extends Object?>(
+          [T? result]) async =>
+      await super.maybePop(result) ||
+      (await previous?.maybePop(result) ?? false);
 }
 
 class _NodeMaterialPage<T> extends MaterialPage<T> {
@@ -122,7 +128,8 @@ class _NodeMaterialPage<T> extends MaterialPage<T> {
       );
 }
 
-class _NodePageBasedMaterialPageRoute<T> extends PageRoute<T>
+class _NodePageBasedMaterialPageRoute<T>
+    extends PageRoute<T>
     with MaterialRouteTransitionMixin<T> {
   _NodePageBasedMaterialPageRoute({
     required _NodeMaterialPage<T> page,
@@ -131,7 +138,8 @@ class _NodePageBasedMaterialPageRoute<T> extends PageRoute<T>
     assert(opaque);
   }
 
-  _NodeMaterialPage<T> get _page => settings as _NodeMaterialPage<T>;
+  _NodeMaterialPage<T> get _page =>
+      settings as _NodeMaterialPage<T>;
 
   @override
   Widget buildContent(BuildContext context) => _page.child;
@@ -143,15 +151,17 @@ class _NodePageBasedMaterialPageRoute<T> extends PageRoute<T>
   bool get fullscreenDialog => _page.fullscreenDialog;
 
   @override
-  String get debugLabel => '${super.debugLabel}(${_page.name})';
+  String get debugLabel =>
+      '${super.debugLabel}(${_page.name})';
 
   @override
   bool get impliesAppBarDismissal =>
-      super.impliesAppBarDismissal || (navigator?.canPop() ?? false);
+      super.impliesAppBarDismissal ||
+      (navigator?.canPop() ?? false);
 }
 
-extension PrevNavigatorExtension on NavigatorState {
-  NavigatorState? get prev {
+extension PreviousNavigatorExtension on NavigatorState {
+  NavigatorState? get previous {
     if (!context.mounted) {
       return null;
     }
